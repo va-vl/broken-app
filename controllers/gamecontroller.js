@@ -1,4 +1,4 @@
-const { OK, INTERNAL_SERVER_ERROR } = require('http-status-codes');
+const { StatusCodes } = require('http-status-codes');
 const router = require('express').Router();
 //
 const Game = require('../db').import('../models/game');
@@ -11,11 +11,11 @@ router.get('/all', (req, res) => {
     where: { owner_id: id },
   })
     .then(
-      (games) => res.status(OK).json({
+      (games) => res.status(StatusCodes.OK).json({
         games,
         message: 'Data fetched.',
       }),
-      createErrorHandler(res, INTERNAL_SERVER_ERROR),
+      createErrorHandler(res, StatusCodes.INTERNAL_SERVER_ERROR),
     );
 });
 
@@ -32,11 +32,11 @@ router.get('/:id', (req, res) => {
     },
   })
     .then(
-      (game) => res.status(OK).json({
+      (game) => res.status(StatusCodes.OK).json({
         game,
         message: 'Data fetched',
       }),
-      createErrorHandler(res, INTERNAL_SERVER_ERROR),
+      createErrorHandler(res, StatusCodes.INTERNAL_SERVER_ERROR),
     );
 });
 
@@ -62,11 +62,11 @@ router.post('/create', (req, res) => {
     have_played: havePlayed,
   })
     .then(
-      (game) => res.status(OK).json({
+      (game) => res.status(StatusCodes.OK).json({
         game,
         message: 'Game created.',
       }),
-      createErrorHandler(res, INTERNAL_SERVER_ERROR),
+      createErrorHandler(res, StatusCodes.INTERNAL_SERVER_ERROR),
     );
 });
 
@@ -99,11 +99,11 @@ router.put('/update/:id', (req, res) => {
     },
   })
     .then(
-      (game) => res.status(OK).json({
+      (game) => res.status(StatusCodes.OK).json({
         game,
         message: 'Successfully updated.',
       }),
-      createErrorHandler(res, INTERNAL_SERVER_ERROR),
+      createErrorHandler(res, StatusCodes.INTERNAL_SERVER_ERROR),
     );
 });
 
@@ -120,11 +120,11 @@ router.delete('/remove/:id', (req, res) => {
     },
   })
     .then(
-      (game) => res.status(OK).json({
+      (game) => res.status(StatusCodes.OK).json({
         game,
         message: 'Successfully deleted',
       }),
-      createErrorHandler(res, INTERNAL_SERVER_ERROR),
+      createErrorHandler(res, StatusCodes.INTERNAL_SERVER_ERROR),
     );
 });
 
