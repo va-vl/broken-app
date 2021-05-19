@@ -2,6 +2,7 @@ const { OK, INTERNAL_SERVER_ERROR } = require('http-status-codes');
 const router = require('express').Router();
 //
 const Game = require('../db').import('../models/game');
+const createErrorHandler = require('./../utils/createResponseErrorHandler');
 
 router.get('/all', (req, res) => {
   const { user: { id } } = req;
@@ -14,9 +15,7 @@ router.get('/all', (req, res) => {
         games,
         message: 'Data fetched.',
       }),
-      (err) => res.status(INTERNAL_SERVER_ERROR).json({
-        message: `Error: ${err.message}`,
-      }),
+      createErrorHandler(res, INTERNAL_SERVER_ERROR),
     );
 });
 
@@ -24,7 +23,7 @@ router.get('/:id', (req, res) => {
   const {
     params: { id },
     user: { id: ownerId },
-  } = req.params;
+  } = req;
 
   Game.findOne({
     where: {
@@ -37,9 +36,7 @@ router.get('/:id', (req, res) => {
         game,
         message: 'Data fetched',
       }),
-      (err) => res.status(INTERNAL_SERVER_ERROR).json({
-        message: `Error: ${err.message}`,
-      }),
+      createErrorHandler(res, INTERNAL_SERVER_ERROR),
     );
 });
 
@@ -69,9 +66,7 @@ router.post('/create', (req, res) => {
         game,
         message: 'Game created.',
       }),
-      (err) => res.status(INTERNAL_SERVER_ERROR).json({
-        message: `Error: ${err.message}`,
-      }),
+      createErrorHandler(res, INTERNAL_SERVER_ERROR),
     );
 });
 
@@ -108,9 +103,7 @@ router.put('/update/:id', (req, res) => {
         game,
         message: 'Successfully updated.',
       }),
-      (err) => res.status(INTERNAL_SERVER_ERROR).json({
-        message: `Error: ${err.message}`,
-      }),
+      createErrorHandler(res, INTERNAL_SERVER_ERROR),
     );
 });
 
@@ -131,9 +124,7 @@ router.delete('/remove/:id', (req, res) => {
         game,
         message: 'Successfully deleted',
       }),
-      (err) => res.status(INTERNAL_SERVER_ERROR).json({
-        message: `Error: ${err.message}`,
-      }),
+      createErrorHandler(res, INTERNAL_SERVER_ERROR),
     );
 });
 
