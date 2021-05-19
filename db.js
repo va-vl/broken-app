@@ -1,19 +1,20 @@
 const Sequelize = require('sequelize');
-                                //database username   password
-const sequelize = new Sequelize(process.env.DB, process.env.DB_USER, process.env.DB_PASSWORD, {
+
+const sequelize = new Sequelize(
+  process.env.DB,
+  process.env.DB_USER,
+  process.env.DB_PASSWORD,
+  {
+    operatorsAliases: Sequelize.Op,
     host: process.env.DB_HOST,
     dialect: 'postgres',
-    operatorsAliases: Sequelize.Op,
-})
+    logging: false,
+  },
+);
 
 sequelize.authenticate().then(
-    function success() {
-        console.log("Connected to DB");
-    },
-
-    function fail(err) {
-        console.log(`Error: ${err}`);
-    }
-)
+  () => { console.log('Connected to DB'); },
+  (err) => { console.err(`Error: ${err}`); },
+);
 
 module.exports = sequelize;
