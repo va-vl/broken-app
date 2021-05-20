@@ -7,7 +7,7 @@ const User = require('../db').import('../models/user');
 const {
   createErrorResponse,
   createErrorResponseHandler,
-} = require('../utils/createResponseErrorHandler');
+} = require('../utils/create-response');
 
 const JWT_EXPIRATION_TIME = 60 * 60 * 24;
 

@@ -2,7 +2,7 @@ const { StatusCodes } = require('http-status-codes');
 const router = require('express').Router();
 //
 const Game = require('../db').import('../models/game');
-const { createErrorResponseHandler } = require('./../utils/createResponseErrorHandler');
+const { createErrorResponseHandler } = require('./../utils/create-response');
 
 router.get('/all', (req, res) => {
   const { user: { id } } = req;

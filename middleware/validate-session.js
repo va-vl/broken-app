@@ -2,7 +2,7 @@ const { StatusCodes } = require('http-status-codes');
 const jwt = require('jsonwebtoken');
 //
 const User = require('../db').import('../models/user');
-const { createErrorResponse } = require('../utils/createResponseErrorHandler');
+const { createErrorResponse } = require('../utils/create-response');
 
 module.exports = function (req, res, next) {
   if (req.method === 'OPTIONS') {
@@ -22,7 +22,9 @@ module.exports = function (req, res, next) {
       'lets_play_sum_games_man',
       (_, decoded) => {
         if (decoded) {
-          User.findOne({ where: { id: decoded.id } })
+          const { id } = decoded;
+
+          User.findOne({ where: { id } })
             .then(
               (user) => {
                 req.user = user;
