@@ -3,7 +3,7 @@ import { Router } from 'express';
 //
 import {
   createErrorResponseHandler,
-} from '../utils/create-response.js';
+} from '../../utils/create-response.js';
 
 const router = Router();
 

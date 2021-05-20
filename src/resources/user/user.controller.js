@@ -6,7 +6,7 @@ import jwt from 'jsonwebtoken';
 import {
   createErrorResponse,
   createErrorResponseHandler,
-} from '../utils/create-response.js';
+} from '../../utils/create-response.js';
 
 const JWT_EXPIRATION_TIME = 60 * 60 * 24;
 

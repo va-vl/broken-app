@@ -5,7 +5,7 @@ import { createErrorResponse } from '../utils/create-response.js';
 
 export default (UserModel) => (req, res, next) => {
   if (req.method === 'OPTIONS') {
-    next(); // allowing options as a method for request
+    next();
   } else {
     const sessionToken = req.headers.authorization;
 
