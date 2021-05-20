@@ -1,132 +1,137 @@
-const { StatusCodes } = require('http-status-codes');
-const router = require('express').Router();
+import { StatusCodes } from 'http-status-codes';
+import { Router } from 'express';
 //
-const Game = require('../db').import('../models/game');
-const { createErrorResponseHandler } = require('../utils/create-response');
+import {
+  createErrorResponseHandler,
+} from '../utils/create-response.js';
 
-router.get('/all', (req, res) => {
-  const { user: { id: ownerId } } = req;
+const router = Router();
 
-  Game.findAll({
-    where: { owner_id: ownerId },
-  })
-    .then(
-      (games) => res.status(StatusCodes.OK).json({
-        games,
-        message: 'Data fetched.',
-      }),
-      createErrorResponseHandler(res, StatusCodes.INTERNAL_SERVER_ERROR),
-    );
-});
+export default (GameModel) => {
+  router.get('/all', (req, res) => {
+    const { user: { id: ownerId } } = req;
 
-router.get('/:id', (req, res) => {
-  const {
-    params: { id },
-    user: { id: ownerId },
-  } = req;
+    GameModel.findAll({
+      where: { owner_id: ownerId },
+    })
+      .then(
+        (games) => res.status(StatusCodes.OK).json({
+          games,
+          message: 'Data fetched.',
+        }),
+        createErrorResponseHandler(res, StatusCodes.INTERNAL_SERVER_ERROR),
+      );
+  });
 
-  Game.findOne({
-    where: {
-      id: id,
-      owner_id: ownerId,
-    },
-  })
-    .then(
-      (game) => res.status(StatusCodes.OK).json({
-        game,
-        message: 'Data fetched',
-      }),
-      createErrorResponseHandler(res, StatusCodes.INTERNAL_SERVER_ERROR),
-    );
-});
+  router.get('/:id', (req, res) => {
+    const {
+      params: { id },
+      user: { id: ownerId },
+    } = req;
 
-router.post('/create', (req, res) => {
-  const {
-    body: {
-      game: {
-        title,
-        studio,
-        esrb_rating: esrbRating,
-        user_rating: userRating,
-        have_played: havePlayed,
+    GameModel.findOne({
+      where: {
+        id: id,
+        owner_id: ownerId,
       },
-    },
-    user: { id: ownerId },
-  } = req;
+    })
+      .then(
+        (game) => res.status(StatusCodes.OK).json({
+          game,
+          message: 'Data fetched',
+        }),
+        createErrorResponseHandler(res, StatusCodes.INTERNAL_SERVER_ERROR),
+      );
+  });
 
-  Game.create({
-    title,
-    owner_id: ownerId,
-    studio,
-    esrb_rating: esrbRating,
-    user_rating: userRating,
-    have_played: havePlayed,
-  })
-    .then(
-      (game) => res.status(StatusCodes.OK).json({
-        game,
-        message: 'Game created.',
-      }),
-      createErrorResponseHandler(res, StatusCodes.INTERNAL_SERVER_ERROR),
-    );
-});
-
-router.put('/update/:id', (req, res) => {
-  const {
-    params: { id },
-    body: {
-      game: {
-        title,
-        studio,
-        esrb_rating: esrbRating,
-        user_rating: userRating,
-        have_played: havePlayed,
+  router.post('/create', (req, res) => {
+    const {
+      body: {
+        game: {
+          title,
+          studio,
+          esrb_rating: esrbRating,
+          user_rating: userRating,
+          have_played: havePlayed,
+        },
       },
-    },
-    user: { id: ownerId },
-  } = req;
+      user: { id: ownerId },
+    } = req;
 
-  Game.update({
-    title,
-    studio,
-    esrb_rating: esrbRating,
-    user_rating: userRating,
-    have_played: havePlayed,
-  },
-  {
-    where: {
-      id,
+    GameModel.create({
+      title,
       owner_id: ownerId,
+      studio,
+      esrb_rating: esrbRating,
+      user_rating: userRating,
+      have_played: havePlayed,
+    })
+      .then(
+        (game) => res.status(StatusCodes.OK).json({
+          game,
+          message: 'Game created.',
+        }),
+        createErrorResponseHandler(res, StatusCodes.INTERNAL_SERVER_ERROR),
+      );
+  });
+
+  router.put('/update/:id', (req, res) => {
+    const {
+      params: { id },
+      body: {
+        game: {
+          title,
+          studio,
+          esrb_rating: esrbRating,
+          user_rating: userRating,
+          have_played: havePlayed,
+        },
+      },
+      user: { id: ownerId },
+    } = req;
+
+    GameModel.update({
+      title,
+      studio,
+      esrb_rating: esrbRating,
+      user_rating: userRating,
+      have_played: havePlayed,
     },
-  })
-    .then(
-      (game) => res.status(StatusCodes.OK).json({
-        game,
-        message: 'Successfully updated.',
-      }),
-      createErrorResponseHandler(res, StatusCodes.INTERNAL_SERVER_ERROR),
-    );
-});
+    {
+      where: {
+        id,
+        owner_id: ownerId,
+      },
+    })
+      .then(
+        (game) => res.status(StatusCodes.OK).json({
+          game,
+          message: 'Successfully updated.',
+        }),
+        createErrorResponseHandler(res, StatusCodes.INTERNAL_SERVER_ERROR),
+      );
+  });
 
-router.delete('/remove/:id', (req, res) => {
-  const {
-    params: { id },
-    user: { id: ownerId },
-  } = req;
+  router.delete('/remove/:id', (req, res) => {
+    const {
+      params: { id },
+      user: { id: ownerId },
+    } = req;
 
-  Game.destroy({
-    where: {
-      id,
-      owner_id: ownerId,
-    },
-  })
-    .then(
-      (game) => res.status(StatusCodes.OK).json({
-        game,
-        message: 'Successfully deleted',
-      }),
-      createErrorResponseHandler(res, StatusCodes.INTERNAL_SERVER_ERROR),
-    );
-});
+    GameModel.destroy({
+      where: {
+        id,
+        owner_id: ownerId,
+      },
+    })
+      .then(
+        (game) => res.status(StatusCodes.OK).json({
+          game,
+          message: 'Successfully deleted',
+        }),
+        createErrorResponseHandler(res, StatusCodes.INTERNAL_SERVER_ERROR),
+      );
+  });
 
-module.exports = router;
+  return router;
+};

@@ -1,6 +1,9 @@
-const Sequelize = require('sequelize');
+import dotenv from 'dotenv';
+import Sequelize from 'sequelize';
 
-const sequelize = new Sequelize(
+dotenv.config();
+
+export default new Sequelize(
   process.env.DB,
   process.env.DB_USER,
   process.env.DB_PASSWORD,
@@ -11,10 +14,3 @@ const sequelize = new Sequelize(
     logging: false,
   },
 );
-
-sequelize.authenticate().then(
-  () => { console.log('Connected to DB'); },
-  (err) => { console.err(`Error: ${err}`); },
-);
-
-module.exports = sequelize;

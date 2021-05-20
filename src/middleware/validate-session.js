@@ -1,10 +1,9 @@
-const { StatusCodes } = require('http-status-codes');
-const jwt = require('jsonwebtoken');
+import { StatusCodes } from 'http-status-codes';
+import jwt from 'jsonwebtoken';
 //
-const User = require('../db').import('../models/user');
-const { createErrorResponse } = require('../utils/create-response');
+import { createErrorResponse } from '../utils/create-response.js';
 
-module.exports = function (req, res, next) {
+export default (UserModel) => (req, res, next) => {
   if (req.method === 'OPTIONS') {
     next(); // allowing options as a method for request
   } else {
@@ -24,7 +23,7 @@ module.exports = function (req, res, next) {
         if (decoded) {
           const { id } = decoded;
 
-          User.findOne({ where: { id } })
+          UserModel.findOne({ where: { id } })
             .then(
               (user) => {
                 req.user = user;

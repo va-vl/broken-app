@@ -5,7 +5,7 @@ const createErrorResponseHandler = (res, code) =>
 const createErrorResponse = (res, code, message) =>
   res.status(code).send(`Error: ${message}`);
 
-module.exports = {
+export {
   createErrorResponse,
   createErrorResponseHandler,
 };

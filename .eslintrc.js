@@ -12,12 +12,6 @@ module.exports = {
   },
   rules: {
     semi: ['error', 'always'],
-    'comma-dangle': ['error', {
-      arrays: 'always-multiline',
-      objects: 'always-multiline',
-      imports: 'always',
-      exports: 'always',
-      functions: 'always-multiline',
-    }],
+    'comma-dangle': ['error', 'always-multiline'],
   },
 };
