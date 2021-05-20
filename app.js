@@ -1,10 +1,10 @@
 require('dotenv').config();
 const express = require('express');
 //
-const db = require('./db');
-const user = require('./controllers/usercontroller');
-const game = require('./controllers/gamecontroller');
-const validateSession = require('./middleware/validate-session');
+const db = require('./src/db');
+const user = require('./src/controllers/usercontroller');
+const game = require('./src/controllers/gamecontroller');
+const validateSession = require('./src/middleware/validate-session');
 
 const PORT = 4000;
 

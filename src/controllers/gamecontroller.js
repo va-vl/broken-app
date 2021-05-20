@@ -2,13 +2,13 @@ const { StatusCodes } = require('http-status-codes');
 const router = require('express').Router();
 //
 const Game = require('../db').import('../models/game');
-const { createErrorResponseHandler } = require('./../utils/create-response');
+const { createErrorResponseHandler } = require('../utils/create-response');
 
 router.get('/all', (req, res) => {
-  const { user: { id } } = req;
+  const { user: { id: ownerId } } = req;
 
   Game.findAll({
-    where: { owner_id: id },
+    where: { owner_id: ownerId },
   })
     .then(
       (games) => res.status(StatusCodes.OK).json({
@@ -50,9 +50,10 @@ router.post('/create', (req, res) => {
         user_rating: userRating,
         have_played: havePlayed,
       },
-      user: { id: ownerId },
     },
+    user: { id: ownerId },
   } = req;
+
   Game.create({
     title,
     owner_id: ownerId,
@@ -81,8 +82,8 @@ router.put('/update/:id', (req, res) => {
         user_rating: userRating,
         have_played: havePlayed,
       },
-      user: { id: ownerId },
     },
+    user: { id: ownerId },
   } = req;
 
   Game.update({
