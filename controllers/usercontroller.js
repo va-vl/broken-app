@@ -4,7 +4,10 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 //
 const User = require('../db').import('../models/user');
-const createErrorHandler = require('./../utils/createResponseErrorHandler');
+const {
+  createErrorResponse,
+  createErrorResponseHandler,
+} = require('../utils/createResponseErrorHandler');
 
 const JWT_EXPIRATION_TIME = 60 * 60 * 24;
 
@@ -37,7 +40,7 @@ router.post('/signup', (req, res) => {
 
         res.status(StatusCodes.OK).json({ user, token });
       },
-      createErrorHandler(res, StatusCodes.INTERNAL_SERVER_ERROR),
+      createErrorResponseHandler(res, StatusCodes.INTERNAL_SERVER_ERROR),
     );
 });
 
@@ -73,15 +76,15 @@ router.post('/signin', (req, res) => {
             });
           }
 
-          res.status(StatusCodes.BAD_GATEWAY).send('Error: Passwords do not match.');
+          createErrorResponse(res, StatusCodes.BAD_GATEWAY, 'Passwords do not match');
         });
 
         return;
       }
 
-      res.status(StatusCodes.FORBIDDEN).send('User not found.');
+      createErrorResponse(res, StatusCodes.FORBIDDEN, 'User not found');
     },
-    createErrorHandler(res, StatusCodes.INTERNAL_SERVER_ERROR),
+    createErrorResponseHandler(res, StatusCodes.INTERNAL_SERVER_ERROR),
   );
 });
 
