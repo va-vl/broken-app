@@ -7,5 +7,5 @@ export default (gameRepository) => ({
 
   update: async (props) => gameRepository.update(props),
 
-  remove: async (owner_id, id) => gameRepository.delete(owner_id, id),
+  remove: async (owner_id, id) => gameRepository.remove(owner_id, id),
 });

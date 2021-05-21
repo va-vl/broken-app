@@ -1,7 +1,8 @@
 import { StatusCodes } from 'http-status-codes';
 import jwt from 'jsonwebtoken';
 //
-import { createErrorResponse } from '../utils/create-response.js';
+import * as config from '../config/index.js';
+import { createErrorResponse } from '../utils/index.js';
 
 export default (userModel) => (req, res, next) => {
   if (req.method === 'OPTIONS') {
@@ -17,25 +18,18 @@ export default (userModel) => (req, res, next) => {
     });
   }
 
-  jwt.verify(
-    sessionToken,
-    'lets_play_sum_games_man',
-    (_, decoded) => {
-      if (!decoded) {
-        return createErrorResponse(res, StatusCodes.BAD_REQUEST, 'Not authorized')
-      }
+  try {
+    const { id } = jwt.verify(sessionToken, config.JWT_KEY);
 
-      const { id } = decoded;
-
-      userModel
-        .findOne({ where: { id } })
-        .then((user) => {
-            req.user = user;
-            next();
-        })
-        .catch(() => createErrorResponse(
-          res, StatusCodes.UNAUTHORIZED, 'Not authorized',
-        ));
-    }
-  );
+    userModel.findOne({ where: { id } })
+      .then((user) => {
+        req.user = user;
+        next();
+      })
+      .catch(() => createErrorResponse(
+        res, StatusCodes.UNAUTHORIZED, 'Not authorized',
+      ));
+  } catch (err) {
+    next(err);
+  }
 };

@@ -27,7 +27,7 @@ export default (gameModel) => ({
     user_rating,
     have_played,
   }) => {
-    const game = gameModel.create({
+    const game = await gameModel.create({
       title,
       owner_id,
       studio,
@@ -48,7 +48,7 @@ export default (gameModel) => ({
     id,
     owner_id
   }) => {
-    const game = gameModel.update({
+    const game = await gameModel.update({
       title,
       studio,
       esrb_rating,
@@ -56,10 +56,13 @@ export default (gameModel) => ({
       have_played,
     },
     {
-      where: { id, owner_id },
+      where: {
+        id,
+        owner_id
+      },
     });
 
-    if (game === null) {
+    if (game[0] === 0) {
       throw new Error('Error: game not found');
     }
 
@@ -67,11 +70,11 @@ export default (gameModel) => ({
   },
 
   remove: async (owner_id, id) => {
-    const game = gameModel.destroy({
+    const game = await gameModel.destroy({
       where: { id, owner_id },
     });
 
-    if (game === null) {
+    if (game === 0) {
       throw new Error('Error: game not found');
     }
 

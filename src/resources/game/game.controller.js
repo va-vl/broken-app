@@ -32,7 +32,7 @@ export default (gameService) => {
 
   router.get('/:id', routerErrorHandle(
     async (req, res) => {
-      const id = getId(id);
+      const id = getId(req);
       const owner_id = getOwnerId(req);
       const game = await gameService.getById(owner_id, id);
 

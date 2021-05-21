@@ -1,15 +1,14 @@
-import dotenv from 'dotenv';
 import Sequelize from 'sequelize';
-
-dotenv.config();
+//
+import * as config from '../config/index.js'
 
 export default new Sequelize(
-  process.env.DB,
-  process.env.DB_USER,
-  process.env.DB_PASSWORD,
+  config.DB,
+  config.DB_USER,
+  config.DB_PASSWORD,
   {
+    host: config.DB_HOST,
     operatorsAliases: Sequelize.Op,
-    host: process.env.DB_HOST,
     dialect: 'postgres',
     logging: false,
   },

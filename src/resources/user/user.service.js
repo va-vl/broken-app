@@ -1,12 +1,12 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-
-const JWT_EXPIRATION_TIME = 60 * 60 * 24;
+//
+import * as config from '../../config/index.js';
 
 const createJWT = (id) => jwt.sign(
   { id },
-  'lets_play_sum_games_man',
-  { expiresIn: JWT_EXPIRATION_TIME }
+  config.JWT_KEY,
+  { expiresIn: config.JWT_EXPIRATION_TIME }
 );
 
 export default (userRepository) => ({
@@ -27,7 +27,7 @@ export default (userRepository) => ({
     const { passwordHash, id } = user;
     const isMatching = bcrypt.compareSync(password, passwordHash);
 
-    if (!isMatching) {
+    if (isMatching) {
       throw new Error('Passwords do not match!');
     }
 
