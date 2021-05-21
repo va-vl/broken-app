@@ -4,8 +4,12 @@ import Sequelize from 'sequelize';
 import db from './src/db/db.sequelize.js';
 import userController from './src/resources/user/user.controller.js';
 import userModel from './src/resources/user/user.model.js';
-import gameController from './src/resources/game/game.controller.js';
-import gameModel from './src/resources/game/game.model.js';
+import {
+  gameModel,
+  gameRepository,
+  gameService,
+  gameController,
+} from './src/resources/game/index.js';
 import validateSession from './src/middleware/validate-session.js';
 
 const PORT = 4000;
@@ -24,7 +28,14 @@ const runApp = async () => {
 
     app.use(express.json());
     app.use('/api/auth', userController(models.User));
-    app.use('/api/game', validateSession(models.User), gameController(models.Game));
+    app.use(
+      '/api/game',
+      validateSession(models.User),
+      gameController(gameService(gameRepository(models.Game)))
+    );
+    app.use((err, req, res, next) => {
+      console.log(err);
+    })
   } catch (err) {
     process.stderr.write(`Error: ${err}`);
     process.exit(1);
