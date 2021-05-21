@@ -2,8 +2,12 @@ import express from 'express';
 import Sequelize from 'sequelize';
 //
 import db from './src/db/db.sequelize.js';
-import userController from './src/resources/user/user.controller.js';
-import userModel from './src/resources/user/user.model.js';
+import {
+  userModel,
+  userRepository,
+  userService,
+  userController,
+} from './src/resources/user/index.js'
 import {
   gameModel,
   gameRepository,
@@ -27,17 +31,22 @@ const runApp = async () => {
     process.stdout.write('Connected to DB!');
 
     app.use(express.json());
-    app.use('/api/auth', userController(models.User));
+
+    app.use(
+      '/api/auth',
+      userController(userService(userRepository(models.User)))
+    );
     app.use(
       '/api/game',
       validateSession(models.User),
       gameController(gameService(gameRepository(models.Game)))
     );
+
     app.use((err, req, res, next) => {
-      console.log(err);
+      res.status(500).send(err.message)
     })
   } catch (err) {
-    process.stderr.write(`Error: ${err}`);
+    process.stderr.write(`Error: ${err.message}`);
     process.exit(1);
   }
 };

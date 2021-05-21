@@ -8,6 +8,7 @@ export default (sequelize, DataTypes) => {
     username: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: true,
     },
 
     passwordHash: {
@@ -21,7 +22,6 @@ export default (sequelize, DataTypes) => {
       validate: {
         isEmail: true,
       },
-      unique: true,
     },
   });
 };

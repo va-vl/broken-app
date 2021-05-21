@@ -3,41 +3,42 @@ import jwt from 'jsonwebtoken';
 //
 import { createErrorResponse } from '../utils/create-response.js';
 
-export default (UserModel) => (req, res, next) => {
+export default (userModel) => (req, res, next) => {
   if (req.method === 'OPTIONS') {
-    next();
-  } else {
-    const sessionToken = req.headers.authorization;
-
-    if (!sessionToken) {
-      return res.status(StatusCodes.FORBIDDEN).json({
-        auth: false,
-        message: 'No token provided.',
-      });
-    }
-
-    jwt.verify(
-      sessionToken,
-      'lets_play_sum_games_man',
-      (_, decoded) => {
-        if (decoded) {
-          const { id } = decoded;
-
-          UserModel.findOne({ where: { id } })
-            .then(
-              (user) => {
-                req.user = user;
-                next();
-              },
-              () => createErrorResponse(
-                res, StatusCodes.UNAUTHORIZED, 'Not authorized',
-              ),
-            );
-
-          return;
-        }
-
-        createErrorResponse(res, StatusCodes.BAD_REQUEST, 'Not authorized');
-      });
+    return next();
   }
+
+  const sessionToken = req.headers.authorization;
+
+  if (!sessionToken) {
+    return res.status(StatusCodes.FORBIDDEN).json({
+      auth: false,
+      message: 'No token provided.',
+    });
+  }
+
+  jwt.verify(
+    sessionToken,
+    'lets_play_sum_games_man',
+    (_, decoded) => {
+      if (decoded) {
+        const { id } = decoded;
+
+        userModel.findOne({ where: { id } })
+          .then(
+            (user) => {
+              req.user = user;
+              next();
+            },
+            () => createErrorResponse(
+              res, StatusCodes.UNAUTHORIZED, 'Not authorized',
+            ),
+          );
+
+        return;
+      }
+
+      createErrorResponse(res, StatusCodes.BAD_REQUEST, 'Not authorized');
+    }
+  );
 };
