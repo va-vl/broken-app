@@ -40,6 +40,7 @@ const runApp = async () => {
       validateSession(models.User),
       gameController(gameService(gameRepository(models.Game)))
     );
+
     app.use(appErrorHandler);
   } catch (err) {
     process.stderr.write(`Error: ${err.message}`);
@@ -47,6 +48,8 @@ const runApp = async () => {
   }
 };
 
-app.listen(config.PORT, () => { process.stdout.write(`App is listening on port ${config.PORT}\n`); });
+app.listen(config.PORT, () => {
+  process.stdout.write(`App is listening on port ${config.PORT}\n`);
+});
 
 runApp();
