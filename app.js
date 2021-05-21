@@ -1,7 +1,7 @@
 import express from 'express';
 import Sequelize from 'sequelize';
 //
-import db from './src/db/db.sequelize.js';
+import { db } from './src/db/index.js';
 import {
   userModel,
   userRepository,
@@ -14,9 +14,9 @@ import {
   gameService,
   gameController,
 } from './src/resources/game/index.js';
-import validateSession from './src/middleware/validate-session.js';
-
-const PORT = 4000;
+import { validateSession } from './src/middleware/index.js';
+import { appErrorHandler } from './src/utils/index.js';
+import * as config from './src/config/index.js';
 
 const app = express();
 const models = {
@@ -31,7 +31,6 @@ const runApp = async () => {
     process.stdout.write('Connected to DB!');
 
     app.use(express.json());
-
     app.use(
       '/api/auth',
       userController(userService(userRepository(models.User)))
@@ -41,16 +40,13 @@ const runApp = async () => {
       validateSession(models.User),
       gameController(gameService(gameRepository(models.Game)))
     );
-
-    app.use((err, req, res, next) => {
-      res.status(500).send(err.message)
-    })
+    app.use(appErrorHandler);
   } catch (err) {
     process.stderr.write(`Error: ${err.message}`);
     process.exit(1);
   }
 };
 
-app.listen(PORT, () => { process.stdout.write(`App is listening on port ${PORT}\n`); });
+app.listen(config.PORT, () => { process.stdout.write(`App is listening on port ${config.PORT}\n`); });
 
 runApp();

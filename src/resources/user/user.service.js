@@ -1,7 +1,9 @@
+import { StatusCodes } from 'http-status-codes';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 //
 import * as config from '../../config/index.js';
+import { CustomError } from '../../errors/index.js';
 
 const createJWT = (id) => jwt.sign(
   { id },
@@ -27,8 +29,8 @@ export default (userRepository) => ({
     const { passwordHash, id } = user;
     const isMatching = bcrypt.compareSync(password, passwordHash);
 
-    if (isMatching) {
-      throw new Error('Passwords do not match!');
+    if (!isMatching) {
+      throw new CustomError('Passwords do not match', StatusCodes.FORBIDDEN);
     }
 
     const token = createJWT(id);

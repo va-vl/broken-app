@@ -1,3 +1,5 @@
+import { EntityNotFoundError } from '../../errors/index.js';
+
 export default (userModel) => ({
   create: async (props) => userModel.create(props),
 
@@ -5,7 +7,7 @@ export default (userModel) => ({
     const user = await userModel.findOne({ where: { username } });
 
     if (user === null) {
-      throw new Error('User not found!');
+      throw new EntityNotFoundError('User');
     }
 
     return user;

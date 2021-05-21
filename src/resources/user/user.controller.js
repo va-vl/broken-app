@@ -2,7 +2,7 @@ import { StatusCodes } from 'http-status-codes';
 import { Router } from 'express';
 //
 import {
-  routerErrorHandle,
+  asyncHandler,
 } from '../../utils/index.js';
 
 const getUserProps = (req) => ({
@@ -15,7 +15,7 @@ const getUserProps = (req) => ({
 const router = Router();
 
 export default (userService) => {
-  router.post('/signup', routerErrorHandle(
+  router.post('/signup', asyncHandler(
     async (req, res) => {
       const userProps = getUserProps(req);
       const { user, token } = await userService.signup(userProps);
@@ -24,12 +24,12 @@ export default (userService) => {
     }
   ));
 
-  router.post('/signin', routerErrorHandle(
+  router.post('/signin', asyncHandler(
     async (req, res) => {
       const { username, password } = getUserProps(req);
       const { user, sessionToken } = await userService.signin(username, password);
 
-      return res.status(StatusCodes.OK).json({
+      res.status(StatusCodes.OK).json({
         user,
         sessionToken,
         message: 'Successfully authenticated.',

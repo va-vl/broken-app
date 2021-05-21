@@ -2,7 +2,7 @@ import { StatusCodes } from 'http-status-codes';
 import { Router } from 'express';
 //
 import {
-  routerErrorHandle
+  asyncHandler
 } from '../../utils/index.js';
 
 const getId = (req) => req.params.id;
@@ -18,7 +18,7 @@ const getGameProps = (req) => ({
 const router = Router();
 
 export default (gameService) => {
-  router.get('/all', routerErrorHandle(
+  router.get('/all', asyncHandler(
     async (req, res) => {
       const owner_id = getOwnerId(req);
       const games = await gameService.getAll(owner_id);
@@ -30,7 +30,7 @@ export default (gameService) => {
     }
   ));
 
-  router.get('/:id', routerErrorHandle(
+  router.get('/:id', asyncHandler(
     async (req, res) => {
       const id = getId(req);
       const owner_id = getOwnerId(req);
@@ -43,7 +43,7 @@ export default (gameService) => {
     }
   ));
 
-  router.post('/create', routerErrorHandle(
+  router.post('/create', asyncHandler(
     async (req, res) => {
       const owner_id = getOwnerId(req);
       const gameProps = getGameProps(req);
@@ -58,32 +58,30 @@ export default (gameService) => {
     }
   ));
 
-  router.put('/update/:id', routerErrorHandle(
+  router.put('/update/:id', asyncHandler(
     async (req, res) => {
       const id = getId(req);
       const owner_id = getOwnerId(req);
       const gameProps = getGameProps(req);
-      const game = await gameService.update({
+      await gameService.update({
         id,
         owner_id,
         ...gameProps,
       });
 
       res.status(StatusCodes.OK).json({
-        game,
         message: 'Game updated',
       });
     }
   ));
 
-  router.delete('/remove/:id', routerErrorHandle(
+  router.delete('/remove/:id', asyncHandler(
     async (req, res) => {
       const id = getId(req);
       const owner_id = getOwnerId(req);
-      const game = await gameService.remove(owner_id, id);
+      await gameService.remove(owner_id, id);
 
       res.status(StatusCodes.OK).json({
-        game,
         message: 'Game deleted',
       });
     }

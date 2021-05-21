@@ -1,35 +1,48 @@
 import { StatusCodes } from 'http-status-codes';
 import jwt from 'jsonwebtoken';
 //
+import { asyncHandler } from '../utils/index.js';
 import * as config from '../config/index.js';
-import { createErrorResponse } from '../utils/index.js';
 
-export default (userModel) => (req, res, next) => {
-  if (req.method === 'OPTIONS') {
-    return next();
+export default (userModel) => asyncHandler(
+  async (req, res, next) => {
+    if (req.method === 'OPTIONS') {
+      return next();
+    }
+
+    const sessionToken = req.headers.authorization;
+
+    if (!sessionToken) {
+      return res.status(StatusCodes.FORBIDDEN).json({
+        auth: false,
+        message: 'No token provided.',
+      });
+    }
+
+    await jwt.verify(
+      sessionToken,
+      config.JWT_KEY,
+      async (_, decoded) => {
+        if (!decoded) {
+          return res.status(StatusCodes.BAD_REQUEST).json({
+            auth: false,
+            message: 'Bad request',
+          });
+        };
+
+        const { id } = decoded;
+
+        try {
+          const user = await userModel.findOne({ where: { id } });
+          req.user = user;
+          next();
+        } catch {
+          res.status(StatusCodes.UNAUTHORIZED).json({
+            auth: false,
+            message: 'Unauthorized',
+          });
+        }
+      }
+    );
   }
-
-  const sessionToken = req.headers.authorization;
-
-  if (!sessionToken) {
-    return res.status(StatusCodes.FORBIDDEN).json({
-      auth: false,
-      message: 'No token provided.',
-    });
-  }
-
-  try {
-    const { id } = jwt.verify(sessionToken, config.JWT_KEY);
-
-    userModel.findOne({ where: { id } })
-      .then((user) => {
-        req.user = user;
-        next();
-      })
-      .catch(() => createErrorResponse(
-        res, StatusCodes.UNAUTHORIZED, 'Not authorized',
-      ));
-  } catch (err) {
-    next(err);
-  }
-};
+);
