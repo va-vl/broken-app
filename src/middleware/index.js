@@ -1,1 +1,1 @@
-export { default as validateSession } from './validate-session.js'
+export { default as validateSession } from './validate-session.js';

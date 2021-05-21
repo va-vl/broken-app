@@ -11,5 +11,5 @@ export default (userModel) => ({
     }
 
     return user;
-  }
+  },
 });

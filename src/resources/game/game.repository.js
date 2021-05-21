@@ -2,14 +2,14 @@ import { EntityNotFoundError } from '../../errors/index.js';
 
 const checkIsAbsent = (game, absentCondition) => {
   if (game === absentCondition) {
-    throw new EntityNotFoundError('Game')
+    throw new EntityNotFoundError('Game');
   }
-}
+};
 
 export default (gameModel) => ({
   getAll: async (owner_id) => {
     const games = await gameModel.findAll({
-      where: { owner_id }
+      where: { owner_id },
     });
 
     return games;
@@ -17,7 +17,7 @@ export default (gameModel) => ({
 
   getById: async (owner_id, id) => {
     const game = await gameModel.findOne({
-      where: { id, owner_id }
+      where: { id, owner_id },
     });
 
     checkIsAbsent(game, null);
@@ -52,25 +52,27 @@ export default (gameModel) => ({
     user_rating,
     have_played,
     id,
-    owner_id
+    owner_id,
   }) => {
-    const games = await gameModel.update({
-      title,
-      studio,
-      esrb_rating,
-      user_rating,
-      have_played,
-    },
-    {
-      where: {
-        id,
-        owner_id
+    const game = await gameModel.update(
+      {
+        title,
+        studio,
+        esrb_rating,
+        user_rating,
+        have_played,
       },
-    });
+      {
+        where: {
+          id,
+          owner_id,
+        },
+      },
+    );
 
-    checkIsAbsent(games[0], 0);
+    checkIsAbsent(game[0], 0);
 
-    return games[0];
+    return game;
   },
 
   remove: async (owner_id, id) => {

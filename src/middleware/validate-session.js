@@ -4,8 +4,8 @@ import jwt from 'jsonwebtoken';
 import { asyncHandler } from '../utils/index.js';
 import * as config from '../config/index.js';
 
-export default (userModel) => asyncHandler(
-  async (req, res, next) => {
+export default (userModel) =>
+  asyncHandler(async (req, res, next) => {
     if (req.method === 'OPTIONS') {
       return next();
     }
@@ -28,21 +28,20 @@ export default (userModel) => asyncHandler(
             auth: false,
             message: 'Bad request',
           });
-        };
+        }
 
         const { id } = decoded;
+        const user = await userModel.findOne({ where: { id } });
 
-        try {
-          const user = await userModel.findOne({ where: { id } });
-          req.user = user;
-          next();
-        } catch {
-          res.status(StatusCodes.UNAUTHORIZED).json({
+        if (user === null) {
+          return res.status(StatusCodes.UNAUTHORIZED).json({
             auth: false,
             message: 'Unauthorized',
           });
         }
-      }
+
+        req.user = user;
+        next();
+      },
     );
-  }
-);
+  });

@@ -7,7 +7,7 @@ import {
   userRepository,
   userService,
   userController,
-} from './src/resources/user/index.js'
+} from './src/resources/user/index.js';
 import {
   gameModel,
   gameRepository,
@@ -33,12 +33,12 @@ const runApp = async () => {
     app.use(express.json());
     app.use(
       '/api/auth',
-      userController(userService(userRepository(models.User)))
+      userController(userService(userRepository(models.User))),
     );
     app.use(
       '/api/game',
       validateSession(models.User),
-      gameController(gameService(gameRepository(models.Game)))
+      gameController(gameService(gameRepository(models.Game))),
     );
 
     app.use(appErrorHandler);
