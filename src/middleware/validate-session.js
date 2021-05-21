@@ -21,24 +21,21 @@ export default (userModel) => (req, res, next) => {
     sessionToken,
     'lets_play_sum_games_man',
     (_, decoded) => {
-      if (decoded) {
-        const { id } = decoded;
-
-        userModel.findOne({ where: { id } })
-          .then(
-            (user) => {
-              req.user = user;
-              next();
-            },
-            () => createErrorResponse(
-              res, StatusCodes.UNAUTHORIZED, 'Not authorized',
-            ),
-          );
-
-        return;
+      if (!decoded) {
+        return createErrorResponse(res, StatusCodes.BAD_REQUEST, 'Not authorized')
       }
 
-      createErrorResponse(res, StatusCodes.BAD_REQUEST, 'Not authorized');
+      const { id } = decoded;
+
+      userModel
+        .findOne({ where: { id } })
+        .then((user) => {
+            req.user = user;
+            next();
+        })
+        .catch(() => createErrorResponse(
+          res, StatusCodes.UNAUTHORIZED, 'Not authorized',
+        ));
     }
   );
 };
