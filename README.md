@@ -23,7 +23,7 @@ App is ready to run.
 
 This app was extensively refactored. Part of that process was cleaning up HTTP status codes and sending errors when entities were not found / corrupted. **Slightly different status codes and 404 errors sent when trying to get / update / remove non-existing games are a feature!**
 
-If your want to use the app with as little changes as possible, use `git checkout b0f880c3`. Don't forget to quit _detached HEAD_ state once you're done! Use `git checkout task-3/debug-in-node-js` to move to the latest refactored version.
+If your want to use the app with as little changes as possible, use `git checkout 0d0d2770`. Don't forget to quit _detached HEAD_ state once you're done! Use `git checkout task-3/debug-in-node-js` to move to the latest refactored version.
 
 ## Endpoints
 
