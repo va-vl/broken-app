@@ -12,6 +12,7 @@ module.exports = function (req, res, next) {
             jwt.verify(sessionToken, 'lets_play_sum_games_man', (err, decoded) => {
                 if (decoded) {
                     User.findOne({ where: { id: decoded.id } }).then(user => {
+                        if (user === null) res.status(401).send({ error: "not authorized" });
                         req.user = user;
                         console.log(`user: ${user}`)
                         next()
